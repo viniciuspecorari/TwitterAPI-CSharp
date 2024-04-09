@@ -1,8 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
 using TwitterAPI.Contracts;
 using TwitterAPI.Data;
+using TwitterAPI.Errors;
 using TwitterAPI.Models.DTO;
 using TwitterAPI.Models.Entities;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TwitterAPI.Repository
 {
@@ -15,26 +19,98 @@ namespace TwitterAPI.Repository
             _context = context;    
         }
 
-        public async Task<bool> AddUser(UserDto userDto)
+
+        public async Task<IEnumerable<UserGetDto>> Get()
         {
-            var user = new User
+            var users = await _context.Users.ToListAsync();
+
+            var usersDto = users.Select(user => new UserGetDto(
+
+                  user.Id
+                , user.Name
+                , user.UserName
+                , user.Email
+                , user.DateOfBirth                
+                , user.ProfilePicture
+                , user.ProfileCover
+                , user.ProfileDescription
+                , user.RegisterDateTime
+                )).ToList();
+
+
+            return usersDto;
+        }
+
+
+        public async Task<UserGetDto> GetById(Guid id)
+        {
+            var user = await _context.Users.FindAsync(id);
+
+            if (user is null)
             {
-                Name = userDto.Name,
-                UserName = userDto.UserName,
-                Email = userDto.Email,
-                DateOfBirth = userDto.DateOfBirth,
-                Password = userDto.Password,
-                ProfilePicture = userDto.ProfilePicture,
-                ProfileCover = userDto.ProfileCover,
-                ProfileDescription = userDto.ProfileDescription,
+                throw new Exceptions(StatusCodes.Status404NotFound.ToString(), "User invalid", id.ToString());
+            }
+
+            var userDto = new UserGetDto(
+                 
+                  user.Id
+                , user.Name
+                , user.UserName
+                , user.Email
+                , user.DateOfBirth                
+                , user.ProfilePicture
+                , user.ProfileCover
+                , user.ProfileDescription
+                , user.RegisterDateTime);
+
+            return userDto;
+        }
+
+
+        public async Task Add(UserPostDto user)
+        {
+            var newUser = new User
+            {
+                Name = user.Name,
+                UserName = user.UserName,
+                Email = user.Email,
+                DateOfBirth = user.DateOfBirth,
+                Password = user.Password,
+                ProfilePicture = user.ProfilePicture,
+                ProfileCover = user.ProfileCover,
+                ProfileDescription = user.ProfileDescription,
                 RegisterDateTime = DateTime.Now
 
             };
 
-            _context.Users.Add(user);            
-            var result = await _context.SaveChangesAsync() > 0 ;
+            _context.Users.Add(newUser);            
+            await _context.SaveChangesAsync();            
+        }
 
-            return result;
+        public async Task Delete(Guid id)
+        {
+            var user = await _context.Users.FindAsync(id);
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();            
+        }
+
+        public async Task<UserUpdateDto> Update(UserUpdateDto userUpdate, Guid id)
+        {
+            var user = await _context.Users.FindAsync(id);
+
+            user.Name = userUpdate.Name ?? user.Name;
+            user.UserName = userUpdate.UserName ?? user.UserName;
+            user.DateOfBirth = userUpdate.DateOfBirth ?? user.DateOfBirth;
+            user.Password = userUpdate.Password ?? user.Password;
+            user.ProfilePicture = userUpdate.ProfilePicture ?? user.ProfilePicture;
+            user.ProfileCover = userUpdate.ProfileCover ?? user.ProfileCover;
+            user.ProfileDescription = userUpdate.ProfileDescription ?? user.ProfileDescription;
+
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+
+            return user;
         }
     }
 }

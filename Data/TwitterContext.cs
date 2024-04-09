@@ -12,5 +12,7 @@ namespace TwitterAPI.Data
         }
 
         public DbSet<User> Users { get; set; }
+
+
     }
 }

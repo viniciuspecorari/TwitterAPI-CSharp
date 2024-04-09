@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using TwitterAPI.Contracts;
 using TwitterAPI.Models.DTO;
 
@@ -18,29 +20,54 @@ namespace TwitterAPI.Controllers
             _userRespository = userRepository;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddUser([FromBody] UserDto user)
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserGetDto>>> Get()
         {
-            if (user == null)
-            {
-                return BadRequest("Dados inválidos");
-            }
+            var usersDto = await _userRespository.Get();     
 
-            var newUser = new UserDto
-            {
-                Name = user.Name,
-                UserName = user.UserName,
-                Email = user.Email,
-                DateOfBirth = user.DateOfBirth,
-                Password = user.Password,
-                ProfilePicture = user.ProfilePicture,
-                ProfileCover = user.ProfileCover,
-                ProfileDescription = user.ProfileDescription,
-            };
-                
-            var result = await _userRespository.AddUser(newUser);
+            return Ok(usersDto);
+        }
 
-            return result ? Ok() : BadRequest();
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserGetDto>> GetById(Guid id)
+        {
+
+            var user = await _userRespository.GetById(id);
+
+            return Ok(user);
+        }
+
+
+        [HttpPost]        
+        public async Task<IActionResult> Add([FromBody] UserPostDto user)
+        {
+
+            var newUser = new UserPostDto(user.Name, user.UserName, user.Email, user.DateOfBirth, user.Password, user.ProfilePicture, user.ProfileCover, user.ProfileDescription);
+                 
+            await _userRespository.Add(newUser);
+
+            return Ok();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<UserUpdateDto>> Update([FromBody] UserUpdateDto userUpdate, Guid id)
+        {
+            var userUpdated = await _userRespository.Update(userUpdate, id);
+
+            var userReturn = new UserUpdateDto(userUpdated.Name, userUpdated.UserName, userUpdated.DateOfBirth, userUpdated.Password, userUpdated.ProfilePicture, userUpdated.ProfileCover, userUpdated.ProfileDescription);
+
+            return Ok(userReturn);
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _userRespository.Delete(id);
+
+            return Ok();
         }
 
     }
