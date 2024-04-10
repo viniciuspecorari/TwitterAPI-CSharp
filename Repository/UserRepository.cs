@@ -30,7 +30,9 @@ namespace TwitterAPI.Repository
                 , user.Name
                 , user.UserName
                 , user.Email
-                , user.DateOfBirth                
+                , user.DateOfBirth
+                , user.Password
+                , user.Role
                 , user.ProfilePicture
                 , user.ProfileCover
                 , user.ProfileDescription
@@ -57,7 +59,9 @@ namespace TwitterAPI.Repository
                 , user.Name
                 , user.UserName
                 , user.Email
-                , user.DateOfBirth                
+                , user.DateOfBirth
+                , user.Password
+                , user.Role
                 , user.ProfilePicture
                 , user.ProfileCover
                 , user.ProfileDescription
@@ -65,6 +69,35 @@ namespace TwitterAPI.Repository
 
             return userDto;
         }
+
+        public async Task<UserGetDto> GetByEmail(string email)
+        {
+            var user = await _context.Users
+                   .Where(u => u.Email == email) // Substitua "usuario@exemplo.com" pelo e-mail desejado
+                   .FirstOrDefaultAsync();
+
+            if (user is null)
+            {
+                throw new Exceptions(StatusCodes.Status404NotFound.ToString(), "User invalid", email.ToString());
+            }
+
+            var userDto = new UserGetDto(
+
+                  user.Id
+                , user.Name
+                , user.UserName
+                , user.Email                
+                , user.DateOfBirth
+                , user.Password
+                , user.Role
+                , user.ProfilePicture
+                , user.ProfileCover
+                , user.ProfileDescription
+                , user.RegisterDateTime);
+
+            return userDto;
+        }
+
 
 
         public async Task Add(UserPostDto user)
@@ -76,6 +109,7 @@ namespace TwitterAPI.Repository
                 Email = user.Email,
                 DateOfBirth = user.DateOfBirth,
                 Password = user.Password,
+                Role = user.Role,
                 ProfilePicture = user.ProfilePicture,
                 ProfileCover = user.ProfileCover,
                 ProfileDescription = user.ProfileDescription,

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TwitterAPI.Data;
 
@@ -11,9 +12,11 @@ using TwitterAPI.Data;
 namespace TwitterAPI.Migrations
 {
     [DbContext(typeof(TwitterContext))]
-    partial class TwitterContextModelSnapshot : ModelSnapshot
+    [Migration("20240410141523_userRole")]
+    partial class userRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,13 +46,13 @@ namespace TwitterAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d4f56a1b-9d2c-425b-a022-ad8360d873ab",
+                            Id = "7823bb5f-da98-4c1b-9744-70529ce085a8",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "e94b45c4-8ea0-4b2d-bef1-8977b61f7747",
+                            Id = "fd7eaba1-a990-45e9-9600-5f161b0fb81e",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -67,7 +70,7 @@ namespace TwitterAPI.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -96,15 +99,9 @@ namespace TwitterAPI.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("UserName")
-                        .IsUnique();
 
                     b.ToTable("Users");
                 });

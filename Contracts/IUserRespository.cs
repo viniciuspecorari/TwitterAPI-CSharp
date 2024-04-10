@@ -8,6 +8,7 @@ namespace TwitterAPI.Contracts
     {     
         
         Task<UserGetDto> GetById(Guid id);
+        Task<UserGetDto> GetByEmail(string email);
         Task<IEnumerable<UserGetDto>> Get();
         Task Add(UserPostDto user);
         Task Delete(Guid id);

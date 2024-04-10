@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -8,8 +9,11 @@ using TwitterAPI.Models.DTO;
 
 namespace TwitterAPI.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class UserController : ControllerBase
     {
         
@@ -19,7 +23,6 @@ namespace TwitterAPI.Controllers
         { 
             _userRespository = userRepository;
         }
-
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserGetDto>>> Get()
@@ -44,7 +47,7 @@ namespace TwitterAPI.Controllers
         public async Task<IActionResult> Add([FromBody] UserPostDto user)
         {
 
-            var newUser = new UserPostDto(user.Name, user.UserName, user.Email, user.DateOfBirth, user.Password, user.ProfilePicture, user.ProfileCover, user.ProfileDescription);
+            var newUser = new UserPostDto(user.Name, user.UserName, user.Email, user.DateOfBirth, user.Password, user.Role, user.ProfilePicture, user.ProfileCover, user.ProfileDescription);
                  
             await _userRespository.Add(newUser);
 
