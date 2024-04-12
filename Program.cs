@@ -73,6 +73,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IUserRespository, UserRepository>();
 builder.Services.AddScoped<IToken, TokenRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IFollowerRepository, FollowerRepository>();
 builder.Services.AddDbContext<TwitterContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("TwitterDB"));
