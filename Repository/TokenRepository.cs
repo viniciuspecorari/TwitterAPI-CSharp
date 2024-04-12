@@ -6,7 +6,7 @@ using System.Text;
 using TwitterAPI.Contracts;
 using TwitterAPI.Errors;
 using TwitterAPI.Models.DTO;
-using TwitterAPI.Models.Entities;
+using TwitterAPI.Models;
 
 namespace TwitterAPI.Repository
 {

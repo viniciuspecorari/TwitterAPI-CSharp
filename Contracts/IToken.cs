@@ -1,5 +1,5 @@
-﻿using TwitterAPI.Models.DTO;
-using TwitterAPI.Models.Entities;
+﻿using TwitterAPI.Models;
+using TwitterAPI.Models.DTO;
 
 namespace TwitterAPI.Contracts
 {

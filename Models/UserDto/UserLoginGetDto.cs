@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using TwitterAPI.Models.Entities;
 
 
 namespace TwitterAPI.Models.DTO

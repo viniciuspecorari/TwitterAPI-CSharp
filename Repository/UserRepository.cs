@@ -5,7 +5,7 @@ using TwitterAPI.Contracts;
 using TwitterAPI.Data;
 using TwitterAPI.Errors;
 using TwitterAPI.Models.DTO;
-using TwitterAPI.Models.Entities;
+using TwitterAPI.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TwitterAPI.Repository

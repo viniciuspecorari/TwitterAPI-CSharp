@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TwitterAPI.Data;
 
@@ -11,9 +12,11 @@ using TwitterAPI.Data;
 namespace TwitterAPI.Migrations
 {
     [DbContext(typeof(TwitterContext))]
-    partial class TwitterContextModelSnapshot : ModelSnapshot
+    [Migration("20240411202756_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,13 +46,13 @@ namespace TwitterAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ee38de2e-e937-4705-ba27-e030f2302c46",
+                            Id = "85f136a9-2d07-47b1-8aa4-5e5dbec6eccf",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
-                            Id = "58e2f064-12ca-4878-b2cb-512b5b1b9997",
+                            Id = "8caa5e7f-530b-470a-a296-8a27f2ae6e76",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -140,6 +143,7 @@ namespace TwitterAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MediaUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserId")
