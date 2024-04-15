@@ -13,10 +13,9 @@ namespace TwitterAPI.Models
 
         // Um para Muitos
         public Guid UserId { get; set; }
-        public User User { get; set; }
+        public User User { get; set; }        
 
-        public Like Like { get; set; }
-
+        public ICollection<Like> Likes { get; set; } = new List<Like>();
         public ICollection<Comment> Comments { get; } = new List<Comment>();
 
     }

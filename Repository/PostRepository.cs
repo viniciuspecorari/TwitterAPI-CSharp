@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using TwitterAPI.Contracts;
 using TwitterAPI.Data;
 using TwitterAPI.Models;
@@ -38,8 +39,8 @@ namespace TwitterAPI.Repository
                                 grouped.Key.Description,
                                 grouped.Key.MediaUrl,
                                 grouped.Key.DateCreated,
-                                grouped.Count(p => p.postLike != null),
-                                grouped.Count(p => p.postComment != null)
+                                grouped.Select(p => p.postLike.UserId).Distinct().Count(),
+                                grouped.Select(p => p.postComment.Id).Distinct().Count()
                             );
             
 
@@ -67,8 +68,8 @@ namespace TwitterAPI.Repository
                                 grouped.Key.Description,
                                 grouped.Key.MediaUrl,
                                 grouped.Key.DateCreated,
-                                grouped.Count(p => p.postLike != null),
-                                grouped.Count(p => p.postComment != null)
+                                grouped.Select(p => p.postLike.UserId).Distinct().Count(),
+                                grouped.Select(p => p.postComment.Id).Distinct().Count()                                
                             );
 
             var postsInfoList = postsInfo.ToList();
@@ -87,7 +88,7 @@ namespace TwitterAPI.Repository
                 UserId = postDto.UserId,
             };
 
-            _context.Posts.AddAsync(newPost);
+           await _context.Posts.AddAsync(newPost);
            await _context.SaveChangesAsync();
         }
 

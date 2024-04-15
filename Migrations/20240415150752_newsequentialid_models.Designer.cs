@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TwitterAPI.Data;
 
@@ -11,9 +12,11 @@ using TwitterAPI.Data;
 namespace TwitterAPI.Migrations
 {
     [DbContext(typeof(TwitterContext))]
-    partial class TwitterContextModelSnapshot : ModelSnapshot
+    [Migration("20240415150752_newsequentialid_models")]
+    partial class newsequentialid_models
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,39 @@ namespace TwitterAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("IdentityRole");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "8678f228-4432-417d-90ac-d2eb0eec9c87",
+                            Name = "Administrator",
+                            NormalizedName = "ADMINISTRATOR"
+                        },
+                        new
+                        {
+                            Id = "c3be0a12-e630-4c6f-824b-93bb540374e5",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        });
+                });
 
             modelBuilder.Entity("TwitterAPI.Models.Comment", b =>
                 {
@@ -93,7 +129,8 @@ namespace TwitterAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PostId");
+                    b.HasIndex("PostId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -221,8 +258,8 @@ namespace TwitterAPI.Migrations
             modelBuilder.Entity("TwitterAPI.Models.Like", b =>
                 {
                     b.HasOne("TwitterAPI.Models.Post", "Post")
-                        .WithMany("Likes")
-                        .HasForeignKey("PostId")
+                        .WithOne("Like")
+                        .HasForeignKey("TwitterAPI.Models.Like", "PostId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -252,7 +289,8 @@ namespace TwitterAPI.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("Likes");
+                    b.Navigation("Like")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TwitterAPI.Models.User", b =>
